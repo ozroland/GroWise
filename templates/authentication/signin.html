@@ -1,0 +1,17 @@
+{% extends 'authentication/base.html' %}
+
+{% block content %}
+  <h3>Log In to your account!</h3>
+  <form method="post" action="/signin" class="mb-2">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" class="form-control" id="username" name="username" Required>
+    </div>
+    <div class="form-group">
+      <label for="pass1">Password</label>
+      <input type="password" class="form-control" id="pass1" name="pass1" Required>
+    </div>
+    <button type="submit" class="btn btn-primary">Log In</button>
+  </form>
+{% endblock %}
