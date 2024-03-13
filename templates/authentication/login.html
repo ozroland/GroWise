@@ -2,7 +2,7 @@
 
 {% block content %}
   <h3>Log In to your account!</h3>
-  <form method="post" action="/signin" class="mb-2">
+  <form method="post" action="/login" class="mb-2">
     {% csrf_token %}
     <div class="form-group">
       <label for="username">Username</label>
@@ -14,4 +14,6 @@
     </div>
     <button type="submit" class="btn btn-primary">Log In</button>
   </form>
+  <br>
+  Don't have an account? Register here: <button type="submit"><a href="/signup">SignUp</a></button>
 {% endblock %}

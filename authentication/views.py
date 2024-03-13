@@ -1,19 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.core.mail import EmailMessage, send_mail
-from growise import settings
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth import authenticate, login, logout
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from django.contrib.auth import authenticate as django_auth, login as django_login, logout as django_logout
 from . tokens import generate_token
 
-# Create your views here.
 def home(request):
-    return render(request, "authentication/index.html")
+    return render(request, "authentication/home.html")
 
 def signup(request):
     if request.method == "POST":
@@ -26,23 +20,23 @@ def signup(request):
         
         if User.objects.filter(username=username):
             messages.error(request, "Username already exist! Please try some other username.")
-            return redirect('home')
+            return redirect('signup')
         
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email Already Registered!!")
-            return redirect('home')
+            return redirect('signup')
         
         if len(username)>20:
             messages.error(request, "Username must be under 20 charcters!!")
-            return redirect('home')
+            return redirect('signup')
         
         if pass1 != pass2:
             messages.error(request, "Passwords didn't matched!!")
-            return redirect('home')
+            return redirect('signup')
         
         if not username.isalnum():
             messages.error(request, "Username must be Alpha-Numeric!!")
-            return redirect('home')
+            return redirect('signup')
         
         myuser = User.objects.create_user(username, email, pass1)
         myuser.first_name = fname
@@ -52,7 +46,7 @@ def signup(request):
         myuser.save()
         messages.success(request, "Your Account has been created succesfully!!")
         
-        return redirect('signin')
+        return redirect('login')
         
         
     return render(request, "authentication/signup.html")
@@ -69,33 +63,33 @@ def activate(request,uidb64,token):
         myuser.is_active = True
         # user.profile.signup_confirmation = True
         myuser.save()
-        login(request,myuser)
+        django_login(request,myuser)
         messages.success(request, "Your Account has been activated!!")
-        return redirect('signin')
+        return redirect('login')
     else:
         return render(request,'activation_failed.html')
 
 
-def signin(request):
+def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         pass1 = request.POST['pass1']
         
-        user = authenticate(username=username, password=pass1)
+        user = django_auth(username=username, password=pass1)
         
         if user is not None:
-            login(request, user)
+            django_login(request, user)
             fname = user.first_name
             # messages.success(request, "Logged In Sucessfully!!")
-            return render(request, "authentication/index.html",{"fname":fname})
+            return render(request, "authentication/home.html",{"fname":fname})
         else:
             messages.error(request, "Bad Credentials!!")
-            return redirect('home')
+            return redirect('login')
     
-    return render(request, "authentication/signin.html")
+    return render(request, "authentication/login.html")
 
 
 def signout(request):
-    logout(request)
+    django_logout(request)
     messages.success(request, "Logged Out Successfully!!")
-    return redirect('home')
+    return redirect('login')
