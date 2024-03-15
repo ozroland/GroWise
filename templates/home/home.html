@@ -1,0 +1,128 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Kezdőoldal{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+<section id="home" class="hydroponic-section py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Mi az a hidropolikus növénytermesztés?</h2>
+        <p>A hidropolikus növénytermesztés egy talaj nélküli termesztési módszer, ahol a növényeket tápanyagban gazdag vízben termesztik. Ez a fenntartható és hatékony módszer ideális otthoni használatra, és lehetővé teszi friss, egészséges zöldségek és gyümölcsök termesztését vegyszerek használata nélkül.</p>
+        <p>A hidropónia számos előnnyel jár a hagyományos talajban történő termesztéshez képest, többek között:</p>
+      </div>
+      <div class="col-md-6">
+        <h2 class="section-title text-center mb-4">Előnyök és Fontos Tudnivalók</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <h3 class="mb-3"><i class="bi bi-award-fill text-primary me-2"></i>Előnyök</h3>
+            <ul class="list-unstyled">
+              <li class="mb-2"><i class="bi bi-droplet-fill text-primary me-2"></i>Kisebb vízigény</li>
+              <li class="mb-2"><i class="bi bi-globe text-primary me-2"></i>Föld nélküli termesztés</li>
+              <li class="mb-2"><i class="bi bi-calendar2-check-fill text-primary me-2"></i>Folyamatos termelés</li>
+              <li class="mb-2"><i class="bi bi-shield-fill text-primary me-2"></i>Kevesebb növénybetegség és rovarprobléma</li>
+              <li class="mb-2"><i class="bi bi-tools text-primary me-2"></i>Felhasználóbarát</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h3 class="mb-3"><i class="bi bi-lightbulb-fill text-primary me-2"></i>Fontos Tudnivalók</h3>
+            <ul class="list-unstyled">
+              <li class="mb-2"><i class="bi bi-bookmark-star-fill text-primary me-2"></i>Alapos kutatás</li>
+              <li class="mb-2"><i class="bi bi-tools text-primary me-2"></i>Minőségi felszerelés</li>
+              <li class="mb-2"><i class="bi bi-journal-richtext text-primary me-2"></i>Kísérletezés és tanulás</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="products" class="hydroponic-section py-5">
+  <h2 class="section-title text-center mb-4">Termékeink</h2>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <img src="{% static 'images/product1.jpg' %}" class="card-img-top" alt="Termék 1">
+          <div class="card-body">
+            <h5 class="card-title">Termék 1</h5>
+            <p class="card-text">Termékeink</p>
+            <a href="#" class="btn btn-primary mb1 bg-olive">További információ</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <img src="{% static 'images/product2.png' %}" class="card-img-top" alt="Termék 2">
+          <div class="card-body">
+            <h5 class="card-title">Termék 2</h5>
+            <p class="card-text">Rövid leírás a termékről.</p>
+            <a href="#" class="btn btn-primary mb1 bg-olive">További információ</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <img src="{% static 'images/product3.jpg' %}" class="card-img-top" alt="Termék 3">
+          <div class="card-body">
+            <h5 class="card-title">Termék 3</h5>
+            <p class="card-text">Rövid leírás a termékről.</p>
+            <a href="#" class="btn btn-primary mb1 bg-olive">További információ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="hydroponic-section py-5">
+  <h2 class="section-title text-center mb-4">Rólunk</h2>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h3 class="mb-3">Miért minket válasszon?</h3>
+        <p>Cégünk elkötelezett a minőségi hidroponikus növénytermesztés iránt. Tapasztalt szakembereink és modern technológiáink segítségével biztosítjuk, hogy termékeink és szolgáltatásaink kiemelkedőek legyenek.</p>
+        <p>Kiemelkedő előnyeink közé tartozik a fenntarthatóság és a környezetbarát megközelítés. Minden lépésben azon dolgozunk, hogy minimalizáljuk ökológiai lábnyomunkat, és támogassuk a fenntartható mezőgazdaságot.</p>
+        <p>Emellett fontosnak tartjuk az ügyfélszolgálatot és az ügyfélélményt. Kiváló minőségű termékeink mellett elkötelezettek vagyunk az ügyfeleink elégedettsége iránt, és mindig rendelkezésükre állunk a kérdéseikkel és kéréseikkel.</p>
+      </div>
+      <div class="col-md-6">
+        <img src="{% static 'images/aboutus.jpg' %}" alt="Rólunk" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="hydroponic-section py-5">
+  <h2 class="section-title text-center mb-4">Kapcsolat</h2>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-1 form-container" >
+        <form action="#" method="POST">
+          <div class="mb-3">
+            <label for="name" class="form-label">Név</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="message" class="form-label">Üzenet</label>
+            <textarea class="form-control" id="message" name="message" rows="3" style="resize: none;" required></textarea>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary mb1 bg-olive">Küldés</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

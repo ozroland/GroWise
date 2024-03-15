@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate as django_auth, login as django_log
 from . tokens import generate_token
 
 def home(request):
-    return render(request, "authentication/home.html")
+    return render(request, "home/home.html")
 
 def signup(request):
     if request.method == "POST":
