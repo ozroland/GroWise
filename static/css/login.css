@@ -176,3 +176,8 @@
         display: none!important;
     }
 }
+
+.alert {
+    justify-content: center;
+    display: flex;
+}

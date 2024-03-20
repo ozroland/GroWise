@@ -73,9 +73,9 @@ a:hover {
 .nav-list {
   display: flex;
   list-style-type: none;
-  justify-content: right; /* Elemek középre igazítása vízszintesen */
-  align-items: center; /* Elemek középre igazítása függőlegesen */
-  height: 100%; /* Teljes magasság kihasználása a függőleges igazításhoz */
+  justify-content: right;
+  align-items: center; 
+  height: 100%; 
 }
 
 .nav-item {
@@ -95,8 +95,8 @@ a:hover {
 
 /* Animáció görgetésre */
 .header.scrolled {
-  background-color: #f7f7f7; /* Beállítja a háttérszínt görgetéskor */
-  padding: 5px 20px; /* Csökkenti a paddingot görgetéskor */
+  background-color: #f7f7f7; 
+  padding: 5px 20px;
 }
 
 .logo img {
@@ -104,7 +104,6 @@ a:hover {
   max-height: 100px;
 }
 
-/* Űrlap középre igazítása és mezők nagyobbá tétele */
 .form-container {
   display: flex;
   justify-content: center;
@@ -118,7 +117,7 @@ a:hover {
 }
 
 textarea.form-control {
-  height: 150px; /* Egyéni magasság a textarea-hoz */
+  height: 150px; 
   width: 300px;
 }
 
@@ -134,13 +133,13 @@ textarea.form-control {
   background-color: #333333;
   color: #ffffff;
   padding: 20px 0;
-  text-align: center; /* Középre igazítás */
+  text-align: center;
 }
 
 .footer-content {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Elemek középre igazítása függőlegesen */
+  align-items: center; 
 }
 
 .footer-section {
@@ -153,10 +152,6 @@ textarea.form-control {
 
 .contact-info p {
   margin: 5px 0;
-}
-
-.social-links {
-  /* Position: abszolút eltávolítva */
 }
 
 .social-links li {

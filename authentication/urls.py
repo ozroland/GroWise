@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('home', views.home, name='home'),
@@ -7,4 +8,5 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
     path('login', views.login, name='login'),
     path('signout', views.signout, name='signout'),
+    path('', RedirectView.as_view(url='/home')),
 ]
