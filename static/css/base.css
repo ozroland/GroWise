@@ -1,42 +1,178 @@
+/* Alap beállítások */
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Quicksand');
+
+*{
+    font-family: 'quicksand',Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
 body {
   font-family: sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5; /* Light background color */
+  color: #333;
+  background-color: #f5f5f5;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-header {
-  background-color: #a9e24a; /* Green header color */
-  color: white;
-  padding: 20px;
-  text-align: center;
+.content {
+  flex: 1;
 }
 
-h1 {
-  font-size: 2em;
-  margin-bottom: 0;
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  margin: 0 0 10px 0;
 }
 
-main {
-  padding: 20px;
+p {
+  margin: 0 0 15px 0;
 }
 
-footer {
-  background-color: #a9e24a; /* Green footer color */
-  color: white;
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+a:hover {
+  color: #008000;
+}
+
+/* Header */
+.header {
+  background-color: #f7f7f7;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, padding 0.3s ease;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  color: #333333;
+  text-decoration: none;
+}
+
+.nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-list {
+  display: flex;
+  list-style-type: none;
+  justify-content: right;
+  align-items: center; 
+  height: 100%; 
+}
+
+.nav-item {
+  margin-right: 20px;
+}
+
+.nav-item a {
+  font-size: 16px;
+  color: #000000;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-item a:hover {
+  color: #008000;
+}
+
+/* Animáció görgetésre */
+.header.scrolled {
+  background-color: #f7f7f7; 
+  padding: 5px 20px;
+}
+
+.logo img {
+  max-width: 250px;
+  max-height: 100px;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+}
+
+.form-control {
+  width: 100%;
   padding: 10px;
-  text-align: center;
-}
-
-.alert {
-  margin-top: 20px;
-}
-
-.form-group {
+  font-size: 18px;
   margin-bottom: 15px;
 }
 
-.btn-primary {
-  background-color: #a9e24a; /* Green button color */
-  border-color: #a9e24a;
+textarea.form-control {
+  height: 150px; 
+  width: 300px;
+}
+
+.bg-olive
+{
+  background: #57b846!important;
+  color:#ffffff!important;
+}
+
+/* Footer */
+
+.footer {
+  background-color: #333333;
+  color: #ffffff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+}
+
+.footer-section {
+  flex: 1;
+}
+
+.header-section{
+  flex: 1;
+}
+
+.contact-info p {
+  margin: 5px 0;
+}
+
+.social-links li {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.social-links li a {
+  color: #fff;
+  font-size: 18px;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: #333;
+  transition: all 0.3s ease-in-out;
+}
+
+.social-links li a:hover {
+  background-color: #444;
+}
+
+.logosmall {
+  max-width: 50px;
+  max-height: 50px;
 }

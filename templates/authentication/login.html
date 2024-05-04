@@ -1,19 +1,44 @@
-{% extends 'authentication/base.html' %}
+{% extends 'home/base.html' %}
 
 {% block content %}
-  <h3>Log In to your account!</h3>
-  <form method="post" action="/login" class="mb-2">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" class="form-control" id="username" name="username" Required>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<script src="{% static 'javascript/login.js' %}"></script>
+
+<div class="form-modal">
+  <div class="form-toggle">
+      <button id="login-toggle" onclick="toggleLogin()">Belépés</button>
+      <button id="signup-toggle" onclick="toggleSignup()">Regisztráció</button>
+  </div>
+  <div id="login-form">
+      <form method="post" action="/login">
+        {% csrf_token %}
+          <input type="email" placeholder="Email" id="email" name="email" Required/>
+          <input type="password" placeholder="Jelszó"  id="pass1" name="pass1" Required/>
+          <button type="submit" class="btn login">Belépés</button>
+          <p><a href="javascript:void(0)">Elfelejtett jelszó</a></p>
+          <hr/>
+
+      </form>
+  </div>
+  <div id="signup-form">
+      <form method="post" action="/signup">
+        {% csrf_token %}
+          <input type="email" placeholder="Email" id="email" name="email" Required/>
+          <input type="text" placeholder="Családnév" id="fname" name="fname" Required>
+          <input type="text" placeholder="Keresztnév" id="lname" name="lname" Required>
+          <input type="password" placeholder="Jelszó" id="pass1" name="pass1" Required/>
+          <input type="password" placeholder="Jelszó megerősítése" id="pass2" name="pass2" Required/>
+          <button type="submit" class="btn signup">Regisztráció</button>
+          <p>A Regisztráció gombra kattintva Ön elfogadja az <a href="javascript:void(0)">Általános szerződési feltételeinket</a>.</p>
+          <hr/>
+      </form>
+  </div>
+</div>
+
+{% for message in messages %}
+    <div class="alert" >
+      <strong>Hiba: </strong> {{ message }}
     </div>
-    <div class="form-group">
-      <label for="pass1">Password</label>
-      <input type="password" class="form-control" id="pass1" name="pass1" Required>
-    </div>
-    <button type="submit" class="btn btn-primary">Log In</button>
-  </form>
-  <br>
-  Don't have an account? Register here: <button type="submit"><a href="/signup">SignUp</a></button>
+  {% endfor %}
 {% endblock %}
