@@ -1,12 +1,23 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import OperatingDataSerializer
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from keras.preprocessing import image
+import numpy as np
+from keras.models import load_model
 
 @api_view(['POST'])
-def receive_operating_data(request):
-    if request.method == 'POST':
-        serializer = OperatingDataSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save() 
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+#@permission_classes([IsAuthenticated])
+def receive_image(request):
+        # Kép ellenőrzése és mentése TODO
+        
+        # Kép elküldése a model-nek az azonosításhoz
+        image_path = request.data['image']
+        model = load_model('aitrain/model2.h5')
+        img = image.load_img(image_path, target_size=(100, 100))
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+        predictions = model.predict(img_array)
+        
+        # Válasz elküldése
+        return Response({'status': 'success', 'message': 'Image received, saved, and processed.', 'predictions': predictions.tolist()}, status=status.HTTP_201_CREATED)

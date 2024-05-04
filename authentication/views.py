@@ -8,7 +8,10 @@ from .models import User
 
 
 def home(request):
-    return render(request, "home/home.html")
+    if request.user.is_authenticated:
+        return redirect('dashboard')  # Ha bejelentkezett a felhasználó, átirányítjuk a dashboard-ra
+    else:
+        return render(request, "home/home.html")
 
 def signup(request):
     if request.method == "POST":
@@ -56,6 +59,9 @@ def activate(request,uidb64,token):
 
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    
     if request.method == 'POST':
         email = request.POST['email']
         pass1 = request.POST['pass1']
@@ -64,9 +70,7 @@ def login(request):
         
         if user is not None:
             django_login(request, user)
-            fname = user.first_name
-            lname = user.last_name
-            return render(request, "dashboard/dashboard.html",{"fname":fname, "lname":lname})
+            return redirect("dashboard")
         else:
             messages.error(request, "Nem megfelelő adatok!!")
             return redirect('login')
@@ -75,6 +79,16 @@ def login(request):
 
 
 def signout(request):
+    if not request.user.is_authenticated:
+            return redirect('login')
     django_logout(request)
     messages.success(request, "Sikeres kijelentkezés!!")
     return redirect('login')
+
+
+
+def dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        return render(request, "dashboard/dashboard.html", {"user" : request.user})

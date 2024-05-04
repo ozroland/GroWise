@@ -1,5 +1,6 @@
 from pathlib import Path
 import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 env = environ.Env()
 environ.Env.read_env()
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -22,10 +24,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'aicore',
     'dashboard',
     'api',
-    'hydroponic',
     'authentication',
     'django.contrib.admin',
     'django.contrib.auth',
