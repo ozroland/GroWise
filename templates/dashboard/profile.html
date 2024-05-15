@@ -1,0 +1,18 @@
+{% extends 'dashboard/dashboard.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>User Profile</h1>
+    <div class="user-details">
+        <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Joined:</strong> {{ user.date_joined|date:"Y-m-d" }}</p>
+    </div>
+    <div class="user-data">
+        <h2>Your Data</h2>
+        
+    </div>
+</div>
+{% endblock %}

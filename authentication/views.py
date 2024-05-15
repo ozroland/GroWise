@@ -38,7 +38,6 @@ def signup(request):
         
         return redirect('login')
         
-        
     return render(request, "authentication/login.html")
 
 
@@ -55,7 +54,7 @@ def activate(request,uidb64,token):
         myuser.save()
         django_login(request,myuser)
         messages.success(request, "Sikeres létrehozás!!")
-        return redirect('login')
+        return redirect('dashboard')
 
 
 def login(request):
@@ -66,7 +65,7 @@ def login(request):
         email = request.POST['email']
         pass1 = request.POST['pass1']
         
-        user = django_auth(email=email, password=pass1)
+        user = django_auth(username=email, password=pass1)
         
         if user is not None:
             django_login(request, user)
@@ -84,7 +83,6 @@ def signout(request):
     django_logout(request)
     messages.success(request, "Sikeres kijelentkezés!!")
     return redirect('login')
-
 
 
 def dashboard(request):

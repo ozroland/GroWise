@@ -1,6 +1,7 @@
-{% extends 'home/base.html' %}
+{% extends 'home/home.html' %}
 
 {% block title %}Kezelőfelület{% endblock %}
+{% load static %}
 
 {% block header %}
 <div class="header-section">
@@ -11,26 +12,15 @@
         <li class="nav-item"><a href="#suggestions">Ajánlások</a></li>
         <li class="nav-item">
             <div class="dropdown">
-                <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" title="Profil">
                     <i class="bi bi-person-fill"></i>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li class="dropdown-item">
-                        {% if user.is_authenticated %}
-                            {{ user.get_full_name }}
-                        {% else %}
-                            Profile
-                        {% endif %}
-                    </li>
-                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                    <li><a class="dropdown-item" href="/signout">Kijelentkezés</a></li>
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">Profil</a></li>
+                    <li><a class="dropdown-item" href="{% url 'signout' %}">Kijelentkezés</a></li>
                 </ul>
             </div>
         </li>
     </ul>
 </div>  
-{% endblock %}
-
-{% load static %}
-{% block content %}
 {% endblock %}

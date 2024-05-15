@@ -16,14 +16,15 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['193.225.250.69']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'dashboard',
     'api',
     'authentication',
@@ -68,6 +69,7 @@ WSGI_APPLICATION = 'growise.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
 
 DATABASES = {
     'default': {
@@ -119,6 +121,8 @@ USE_TZ = True
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = "/var/www/example.com/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
