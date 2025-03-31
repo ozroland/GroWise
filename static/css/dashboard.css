@@ -1,0 +1,53 @@
+.upload-section {
+    background-color: #f8f9fa;
+}
+.card {
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+.card img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    object-fit: cover;
+    height: 150px;
+}
+.image-card {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.image-card:hover {
+    transform: scale(1.05);
+}
+
+.selection-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 123, 255, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.selection-icon {
+    font-size: 2rem;
+    color: white;
+}
+
+.image-card.selected .selection-overlay {
+    display: flex;
+}
+.disease-name {
+    display: inline-block;
+    max-width: 100%; 
+    word-wrap: break-word; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}

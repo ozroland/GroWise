@@ -15,19 +15,18 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 SECRET_KEY = env("SECRET_KEY")
 
+PLANTNET_API_KEY = env('PLANTNET_API_KEY')
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['193.225.250.69']
-
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
-
 INSTALLED_APPS = [
-    'django_extensions',
-    'dashboard',
-    'api',
-    'authentication',
+    'apps.plant',
+    'apps.recognition',
+    'apps.authentication',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -124,7 +123,26 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = "/var/www/example.com/static/"
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL = 'media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email settings 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'ozroland46@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'qmygnehoufitccnj' 
+
+DEFAULT_FROM_EMAIL = 'ozroland46@gmail.com'

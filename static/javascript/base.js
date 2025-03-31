@@ -8,4 +8,13 @@ window.addEventListener('scroll', function() {
       header.classList.remove('scrolled');
     }
   });
-   
+
+  function toggleSelection(card) {
+    const checkbox = card.querySelector('.image-checkbox');
+    checkbox.checked = !checkbox.checked;
+    card.classList.toggle('selected', checkbox.checked);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('year').textContent = new Date().getFullYear();
+});

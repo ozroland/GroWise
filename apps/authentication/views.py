@@ -5,13 +5,20 @@ from django.utils.encoding import force_str
 from django.contrib.auth import authenticate as django_auth, login as django_login, logout as django_logout
 from . tokens import generate_token
 from .models import User
+from django.core.mail import send_mail
+from django.conf import settings
+from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect('dashboard')  # Ha bejelentkezett a felhasználó, átirányítjuk a dashboard-ra
+        return redirect('disease_recognition')
     else:
-        return render(request, "home/home.html")
+        return render(request, "core/home.html")
+
 
 def signup(request):
     if request.method == "POST":
@@ -34,7 +41,19 @@ def signup(request):
         myuser.last_name = lname
         myuser.is_active = False
         myuser.save()
-        messages.success(request, "Sikeres létrehozás!!")
+
+        token = generate_token.make_token(myuser)
+        uidb64 = urlsafe_base64_encode(force_bytes(myuser.pk))
+        activation_link = reverse('activate', kwargs={'uidb64': uidb64, 'token': token})
+        full_link = request.build_absolute_uri(activation_link)
+        
+        # Send activation email
+        subject = "Fiók aktiválása"
+        message = f"Hello {myuser.first_name} {myuser.last_name},\n\n" \
+          "Köszönjük, hogy regisztráltál oldalunkon. Kérjük, kattints az alábbi linkre a fiókod aktiválásához:\n\n" \
+          f"{full_link}\n\n"
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [email])
+        messages.success(request, "Sikeres létrehozás!! Ellenőrizze az e-mail fiókját a regisztráció aktiválásához.")
         
         return redirect('login')
         
@@ -50,16 +69,14 @@ def activate(request,uidb64,token):
 
     if myuser is not None and generate_token.check_token(myuser,token):
         myuser.is_active = True
-        # user.profile.signup_confirmation = True
         myuser.save()
-        django_login(request,myuser)
-        messages.success(request, "Sikeres létrehozás!!")
-        return redirect('dashboard')
+        messages.success(request, "Sikeres aktiválás, mostantól beléphetsz!!")
+        return redirect('login')
 
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('disease_recognition')
     
     if request.method == 'POST':
         email = request.POST['email']
@@ -69,7 +86,7 @@ def login(request):
         
         if user is not None:
             django_login(request, user)
-            return redirect("dashboard")
+            return redirect("disease_recognition")
         else:
             messages.error(request, "Nem megfelelő adatok!!")
             return redirect('login')
@@ -85,8 +102,8 @@ def signout(request):
     return redirect('login')
 
 
-def dashboard(request):
+@login_required
+def profile(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    else:
-        return render(request, "dashboard/dashboard.html", {"user" : request.user})
+    return render(request, "authentication/profile.html", {"user": request.user})

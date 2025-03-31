@@ -1,0 +1,66 @@
+{% extends 'core/dashbase.html' %}
+
+{% block title %}Betegségek felismerése{% endblock %}
+
+{% load static %}
+
+{% block content %} 
+<div class="container mt-4">
+    <div class="upload-section text-center p-4 border rounded shadow-sm">
+        <h3>Kép feltöltése</h3>
+        <form method="POST" enctype="multipart/form-data" class="mt-3">
+            {% csrf_token %}
+            <input type="file" class="form-control mb-3" id="imageUpload" name="images" accept="image/*" multiple>
+            <button type="submit" class="btn btn-success">Feltöltés</button>
+        </form>
+    </div>
+
+    <div class="image-actions mt-3 text-center">
+        <button type="submit" form="imageForm" formaction="{% url 'evaluate_images' %}" class="btn btn-primary">Kiértékel</button>
+        <button type="submit" form="imageForm" formaction="{% url 'delete_images' %}" class="btn btn-danger">Töröl</button>
+    </div>
+
+    <h2 class="mt-4">Eddigi feltöltött képek</h2>
+    <form id="imageForm" method="POST">
+        {% csrf_token %}
+        <div class="row g-4">
+            {% for img in user_images %}
+            <div class="col-md-2">
+                <div class="card shadow-sm image-card" onclick="toggleSelection(this)">
+                    <div class="selection-overlay">
+                        <i class="bi bi-check-circle-fill selection-icon"></i>
+                    </div>
+                    <input type="checkbox" name="selected_images" value="{{ img.id }}" class="image-checkbox d-none">
+                    <img src="{{ img.image.url }}" class="card-img-top" alt="Feltöltött kép">
+                    <div class="card-body">
+                        <p class="card-text text-muted">Dátum: {{ img.created_at|date:"Y-m-d" }}</p>
+                        <p class="card-text badge 
+                            {% if img.image_status == 'Processed' %}
+                                bg-success
+                            {% else %}
+                                bg-info text-dark
+                            {% endif %}
+                            ">{{ img.image_status }}</p>
+                        
+                        {% with recognitionresult=img.recognitionresult_set.first %}
+                        {% if recognitionresult %}
+                        <div class="mt-2">
+                            <span class="badge bg-danger disease-name">
+                                {{ recognitionresult.detected_disease }}
+                            </span>
+                            <span class="badge bg-warning text-dark">
+                                Pontosság: {{ recognitionresult.disease_confidence_level }}%
+                            </span>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center">Még nincs feltöltött képed.</p>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+{% endblock %}
