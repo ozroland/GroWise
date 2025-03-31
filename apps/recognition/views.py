@@ -2,12 +2,10 @@ import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Image, RecognitionResult
-from django.contrib import messages
 import os
 import numpy as np
 import tensorflow as tf
 from django.conf import settings
-from django.contrib import messages
 from django.shortcuts import redirect
 from PIL import Image as PILImage
 from django.core.files.storage import default_storage
@@ -57,12 +55,8 @@ def plant_recognition(request):
 def evaluate_disease(request):
     model_path = os.path.join(settings.BASE_DIR, 'tomato_leaf_disease_model.keras')
 
-    try:
-        model = tf.keras.models.load_model(model_path)
-        class_names = ['Bacterial spot','Early blight','Late blight','Leaf Mold','Septoria leaf spot','Spider mites','Target Spot','Yellow Leaf Curl Virus','Mosaic virus','Healthy']
-    except Exception as e:
-        messages.error(request, f"Hiba a modell betöltése során: {str(e)}")
-        return redirect('dashboard')
+    model = tf.keras.models.load_model(model_path)
+    class_names = ['Bacterial spot','Early blight','Late blight','Leaf Mold','Septoria leaf spot','Spider mites','Target Spot','Yellow Leaf Curl Virus','Mosaic virus','Healthy']
 
     if request.method == "POST":
         selected_image_ids = request.POST.getlist('selected_images')
@@ -72,31 +66,27 @@ def evaluate_disease(request):
         images = Image.objects.filter(id__in=selected_image_ids, image_type='Disease')
         
         for image in images:
-            try:
-                img_path = image.image.path
-                img = PILImage.open(img_path)
-                img = img.resize((256, 256))  
-                img_array = np.array(img) / 255.0
-                img_array = np.expand_dims(img_array, axis=0)
-                
-                prediction = model.predict(img_array)
-                predicted_class = np.argmax(prediction, axis=1)[0]
-                predicted_class_name = class_names[predicted_class]
-                confidence = round(float(prediction[0][predicted_class] * 100), 2)
+            img_path = image.image.path
+            img = PILImage.open(img_path)
+            img = img.resize((256, 256))  
+            img_array = np.array(img) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
+            
+            prediction = model.predict(img_array)
+            predicted_class = np.argmax(prediction, axis=1)[0]
+            predicted_class_name = class_names[predicted_class]
+            confidence = round(float(prediction[0][predicted_class] * 100), 2)
 
-                image.image_status = 'Processed'
-                image.save()
+            image.image_status = 'Processed'
+            image.save()
 
-                recognition_result = RecognitionResult(
-                    user=image.user,
-                    image=image,
-                    detected_disease=predicted_class_name,
-                    disease_confidence_level=confidence
-                )
-                recognition_result.save()
-
-            except Exception as e:
-                messages.error(request, f"Hiba a kép kiértékelése során: {str(e)}")
+            recognition_result = RecognitionResult(
+                user=image.user,
+                image=image,
+                detected_disease=predicted_class_name,
+                disease_confidence_level=confidence
+            )
+            recognition_result.save()
 
         return redirect('disease_recognition')
     
@@ -113,46 +103,37 @@ def evaluate_plant(request):
         images = Image.objects.filter(id__in=selected_image_ids, image_type='Plant')
 
         for image in images:
-            try:
-                img_path = image.image.path
+            img_path = image.image.path
+
+            url = f"https://my-api.plantnet.org/v2/identify/all"
+            files = {"images": open(img_path, "rb")}
+            params = {
+                "api-key": settings.PLANTNET_API_KEY,
+                "lang": "hu",
+                "include-related-images": "false",
+                "nb-results": 3
+            }
+
+            response = requests.post(url, files=files, params=params)
+            response_data = response.json()
+
+            if "results" in response_data and response_data["results"]:
+                best_match = response_data["results"][0]
+                predicted_species = best_match["species"]["scientificName"]
+                confidence = best_match["score"]
+                confidence_percent = round(confidence * 100, 2)
                 
-                url = f"https://my-api.plantnet.org/v2/identify/all"
-                files = {"images": open(img_path, "rb")}
-                params = {
-                    "api-key": settings.PLANTNET_API_KEY,
-                    "lang": "hu",
-                    "include-related-images": "false",
-                    "nb-results": 3
-                }
+                image.image_status = 'Processed'
+                image.save()
 
-                response = requests.post(url, files=files, params=params)
-                print("Status Code:", response.status_code)
-                response_data = response.json()
+                recognition_result = RecognitionResult(
+                    user=image.user,
+                    image=image,
+                    detected_plant=predicted_species,
+                    plant_confidence_level=confidence_percent
+                )
 
-                if "results" in response_data and response_data["results"]:
-                    best_match = response_data["results"][0]
-                    predicted_species = best_match["species"]["scientificName"]
-                    confidence = best_match["score"]
-                    confidence_percent = round(confidence * 100, 2)
-                    
-                    image.image_status = 'Processed'
-                    image.save()
-
-                    recognition_result = RecognitionResult(
-                        user=image.user,
-                        image=image,
-                        detected_plant=predicted_species,
-                        plant_confidence_level=confidence_percent
-                    )
-                    recognition_result.save()
-
-                    messages.success(request, f"Növény felismerve: {predicted_species} ({confidence*100:.2f}%)")
-
-                else:
-                    messages.warning(request, "Nem sikerült azonosítani a növényt.")
-
-            except Exception as e:
-                messages.error(request, f"Hiba történt: {str(e)}")
+                recognition_result.save()
 
         return redirect('plant_recognition')
 
@@ -170,7 +151,6 @@ def delete_images(request):
             for image in images:
                 if image.image:
                     file_path = image.image.path
-                    print(f"Törlendő fájl: {file_path}")
                     if default_storage.exists(file_path):
                         default_storage.delete(file_path)
 

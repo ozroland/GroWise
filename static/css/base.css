@@ -1,8 +1,6 @@
-/* Alap beállítások */
-
 @import url('https://fonts.googleapis.com/css?family=Montserrat|Quicksand');
 
-*{
+* {
     font-family: 'quicksand',Arial, Helvetica, sans-serif;
     box-sizing: border-box;
 }
@@ -41,7 +39,6 @@ a:hover {
   color: #008000;
 }
 
-/* Header */
 .header {
   background-color: #f7f7f7;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -94,7 +91,6 @@ a:hover {
   color: #008000;
 }
 
-/* Animáció görgetésre */
 .header.scrolled {
   background-color: #f7f7f7; 
   padding: 5px 20px;
@@ -122,13 +118,18 @@ textarea.form-control {
   width: 300px;
 }
 
-.bg-olive
-{
+.bg-olive {
   background: #57b846!important;
   color:#ffffff!important;
+  --bs-btn-bg: #57b846!important;
+  --bs-btn-border-color: #57b846!important;
+  --bs-btn-hover-bg: #57b846!important;
+  --bs-btn-hover-border-color: #57b846!important;
+  --bs-btn-active-bg: #57b846!important;
+  --bs-btn-active-border-color: #57b846!important;
+  --bs-btn-disabled-bg: #57b846!important;
+  --bs-btn-disabled-border-color: #57b846!important;
 }
-
-/* Footer */
 
 .footer {
   background-color: #333333;
@@ -174,6 +175,6 @@ textarea.form-control {
 }
 
 .logosmall {
-  max-width: 50px;
-  max-height: 50px;
+  max-width: 70px;
+  max-height: 70px;
 }
