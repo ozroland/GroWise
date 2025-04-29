@@ -1,0 +1,25 @@
+{% extends 'core/home.html' %}
+
+{% block title %}Betegségek{% endblock %}
+
+{% load static %}
+
+{% block content %} 
+<div class="container mt-4">
+    <h2 class="mt-4">Betegség képek</h2>
+    <div class="row g-4">
+        {% for img in disease %}
+        <div class="col-md-2">
+            <div class="card shadow-sm image-card">
+                <a href="{% url 'disease_detail' img.id %}" class="stretched-link"></a>
+                <img src="{% static img.image %}" class="card-img-top" alt="Betegség kép">
+                <div class="card-body">
+                    <p class="card-text text-muted"> {{ img.common_name }}</p>
+                    <p class="card-text badge"> {{ img.type }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

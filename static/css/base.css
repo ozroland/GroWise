@@ -56,6 +56,11 @@ a:hover {
   align-items: center;
 }
 
+.custom-img-height {
+  height: 250px!important; 
+  object-fit: cover!important;
+}
+
 .logo {
   font-size: 24px;
   color: #333333;

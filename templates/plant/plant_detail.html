@@ -1,0 +1,36 @@
+{% extends 'core/home.html' %}
+
+{% block title %}{{ plant.common_name }}{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-lg p-4">
+        <div class="row g-4">
+            <div class="col-md-5 d-flex align-items-center justify-content-center">
+                <img src="{% static plant.image %}" class="img-fluid rounded" alt="{{ plant.common_name }}">
+            </div>
+            <div class="col-md-7">
+                <h2 class="text-primary fw-bold">{{ plant.common_name }}</h2>
+                <span class="badge bg-secondary fs-6">Család: {{ plant.family }}</span>
+                <p class="mt-2 text-muted">Nemzetség: <strong>{{ plant.genus }}</strong></p>
+                <p class="text-muted">Faj: <strong>{{ plant.species }}</strong></p>
+                <p class="text-muted">Tudományos név: <em>{{ plant.botanical_name }}</em></p>
+
+                <div class="mt-4">
+                    <h4 class="text-success">Felhasználás</h4>
+                    <p class="text-justify">{{ plant.uses }}</p>
+                </div>
+
+                <div class="mt-4">
+                    <h4 class="text-danger">Előfordulás / Terjedés</h4>
+                    <p class="text-justify">{{ plant.distribution }}</p>
+                </div>
+
+                <a href="{% url 'plant_list' %}" class="btn btn-outline-primary mt-4">&larr; Vissza</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

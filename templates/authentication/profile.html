@@ -1,18 +1,89 @@
-{% extends 'core/dashbase.html' %}
+{% extends 'core/home.html' %}
 
-{% block title %}User Profile{% endblock %}
+{% block title %}Profilom{% endblock %}
 
 {% block content %}
-<div class="profile-container">
-    <h1>User Profile</h1>
-    <div class="user-details">
-        <p><strong>Name:</strong> {{ user.get_full_name }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Joined:</strong> {{ user.date_joined|date:"Y-m-d" }}</p>
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-olive text-white">
+            <h2 class="mb-0">Felhasználói profil</h2>
+        </div>
+        <div class="card-body">
+            <h4 class="mb-3">Személyes adatok</h4>
+            <p><strong>Név:</strong> {{ user.get_full_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Regisztráció dátuma:</strong> {{ user.date_joined|date:"Y-m-d" }}</p>
+        </div>
     </div>
-    <div class="user-data">
-        <h2>Your Data</h2>
-        
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-secondary text-white">
+            <h2 class="mb-0">Adataid</h2>
+        </div>
+        <div class="card-body">
+            <p>Összes növényfelismerés: <strong>{{ total_plant_recognitions }}</strong></p>
+            <p>Összes betegségfelismerés: <strong>{{ total_disease_recognitions }}</strong></p>
+            
+            <hr>
+            <h5 class="mt-4">Aktivitási idővonal</h5>
+            <ul class="timeline">
+              {% for item in recent_results %}
+                <li>
+                  <span class="badge bg-success">{{ item.created_at|date:"Y-m-d H:i" }}</span>
+                  {% if item.detected_plant %}
+                    🌿 Növényfelismerés: <strong>{{ item.detected_plant }}</strong>
+                  {% elif item.detected_disease %}
+                    🦠 Betegségfelismerés: <strong>{{ item.detected_disease }}</strong>
+                  {% endif %}
+                </li>
+              {% empty %}
+                <li>Még nincs aktivitás.</li>
+              {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0">Jelszó módosítása</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'change_password' %}">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <label for="old_password" class="form-label">Régi jelszó</label>
+                    <input type="password" id="old_password" name="old_password" class="form-control {% if form.old_password.errors %}is-invalid{% endif %}" required>
+                    {% for error in form.old_password.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            
+                <div class="mb-3">
+                    <label for="new_password1" class="form-label">Új jelszó</label>
+                    <input type="password" id="new_password1" name="new_password1" class="form-control {% if form.new_password1.errors %}is-invalid{% endif %}" required>
+                    {% for error in form.new_password1.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            
+                <div class="mb-3">
+                    <label for="new_password2" class="form-label">Új jelszó megerősítése</label>
+                    <input type="password" id="new_password2" name="new_password2" class="form-control {% if form.new_password2.errors %}is-invalid{% endif %}" required>
+                    {% for error in form.new_password2.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-danger">Jelszó módosítása</button>
+            </form>            
+        </div>
     </div>
 </div>
 {% endblock %}

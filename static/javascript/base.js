@@ -1,15 +1,4 @@
-window.addEventListener('scroll', function() {
-    const header = document.querySelector('.header');
-    const scrollY = window.scrollY;
-  
-    if (scrollY > 20) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
-
-  function toggleSelection(card) {
+function toggleSelection(card) {
     const checkbox = card.querySelector('.image-checkbox');
     checkbox.checked = !checkbox.checked;
     card.classList.toggle('selected', checkbox.checked);
@@ -17,4 +6,12 @@ window.addEventListener('scroll', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('year').textContent = new Date().getFullYear();
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+  toastElList.forEach(function(toastEl) {
+    const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+    toast.show();
+  });
 });
