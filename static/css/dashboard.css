@@ -44,10 +44,34 @@
 .image-card.selected .selection-overlay {
     display: flex;
 }
+
 .disease-name {
     display: inline-block;
     max-width: 100%; 
     word-wrap: break-word; 
     overflow: hidden; 
     text-overflow: ellipsis;
+}
+
+.timeline {
+    list-style: none;
+    padding-left: 0;
+  }
+
+.timeline li {
+    margin-bottom: 1rem;
+    border-left: 3px solid #ccc;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.timeline li::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: #6c757d;
+    border-radius: 50%;
+    position: absolute;
+    left: -7px;
+    top: 5px;
 }

@@ -1,4 +1,4 @@
-{% extends 'core/dashbase.html' %}
+{% extends 'core/home.html' %}
 
 {% block title %}Növények felismerése{% endblock %}
 
@@ -20,7 +20,7 @@
         <button type="submit" form="imageForm" formaction="{% url 'delete_images' %}" class="btn btn-danger">Töröl</button>
     </div>
 
-    <h2 class="mt-4">Eddigi feltöltött Növény képek</h2>
+    <h2 class="mt-4">Eddigi feltöltött növény képek</h2>
     <form id="imageForm" method="POST">
         {% csrf_token %}
         <div class="row g-4">
@@ -35,25 +35,23 @@
                     <div class="card-body">
                         <p class="card-text text-muted">Dátum: {{ img.created_at|date:"Y-m-d" }}</p>
                         <p class="card-text badge 
-                            {% if img.image_status == 'Processed' %}
+                            {% if img.image_status == 'Feldolgozva' %}
                                 bg-success
                             {% else %}
                                 bg-info text-dark
                             {% endif %}
                             ">{{ img.image_status }}</p>
                         
-                        {% with recognitionresult=img.recognitionresult_set.first %}
-                        {% if recognitionresult %}
+                        {% if img.result %}
                         <div class="mt-2">
                             <span class="badge bg-danger disease-name">
-                                {{ recognitionresult.detected_plant }}
+                                {{ img.result.detected_plant }}
                             </span>
                             <span class="badge bg-warning text-dark">
-                                Pontosság: {{ recognitionresult.plant_confidence_level }}%
+                                Pontosság: {{ img.result.plant_confidence_level }}%
                             </span>
                         </div>
                         {% endif %}
-                        {% endwith %}
                     </div>
                 </div>
             </div>

@@ -14,9 +14,8 @@
           <input type="email" placeholder="Email" id="email" name="email" Required/>
           <input type="password" placeholder="Jelszó"  id="pass1" name="pass1" Required/>
           <button type="submit" class="btn login">Belépés</button>
-          <p><a href="javascript:void(0)">Elfelejtett jelszó</a></p>
+          <p><a href="{% url 'password_reset' %}">Elfelejtett jelszó?</a></p>
           <hr/>
-
       </form>
   </div>
   <div id="signup-form">
@@ -28,15 +27,9 @@
           <input type="password" placeholder="Jelszó" id="pass1" name="pass1" Required/>
           <input type="password" placeholder="Jelszó megerősítése" id="pass2" name="pass2" Required/>
           <button type="submit" class="btn signup">Regisztráció</button>
-          <p>A Regisztráció gombra kattintva Ön elfogadja az <a href="javascript:void(0)">Általános szerződési feltételeinket</a>.</p>
+          <p>A Regisztráció gombra kattintva Ön elfogadja az <a href="{% url 'download_terms_pdf' %}">Általános szerződési feltételeinket (PDF)</a>.</p>
           <hr/>
       </form>
   </div>
 </div>
-
-{% for message in messages %}
-    <div class="alert" >
-      <strong>Üzenet: </strong> {{ message }}
-    </div>
-  {% endfor %}
 {% endblock %}

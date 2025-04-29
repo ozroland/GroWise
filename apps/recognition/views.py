@@ -1,7 +1,7 @@
 import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Image, RecognitionResult
+from .models import Image, Result
 import os
 import numpy as np
 import tensorflow as tf
@@ -56,7 +56,19 @@ def evaluate_disease(request):
     model_path = os.path.join(settings.BASE_DIR, 'tomato_leaf_disease_model.keras')
 
     model = tf.keras.models.load_model(model_path)
-    class_names = ['Bacterial spot','Early blight','Late blight','Leaf Mold','Septoria leaf spot','Spider mites','Target Spot','Yellow Leaf Curl Virus','Mosaic virus','Healthy']
+    #class_names = ['Bacterial spot','Early blight','Late blight','Leaf Mold','Septoria leaf spot','Spider mites','Target Spot','Yellow Leaf Curl Virus','Mosaic virus','Healthy']
+    class_names = [
+    'Bakteriális folt',  # Bacterial spot
+    'Korai betegség',    # Early blight
+    'Késői betegség',    # Late blight
+    'Levélpenész',       # Leaf Mold
+    'Septoria levélfolt',  # Septoria leaf spot
+    'Pókatkák',          # Spider mites
+    'Célzott folt',      # Target Spot
+    'Sárga levél görbület vírus',  # Yellow Leaf Curl Virus
+    'Mózaik vírus',      # Mosaic virus
+    'Egészséges'         # Healthy
+    ]
 
     if request.method == "POST":
         selected_image_ids = request.POST.getlist('selected_images')
@@ -77,10 +89,10 @@ def evaluate_disease(request):
             predicted_class_name = class_names[predicted_class]
             confidence = round(float(prediction[0][predicted_class] * 100), 2)
 
-            image.image_status = 'Processed'
+            image.image_status = 'Feldolgozva'
             image.save()
 
-            recognition_result = RecognitionResult(
+            recognition_result = Result(
                 user=image.user,
                 image=image,
                 detected_disease=predicted_class_name,
@@ -111,28 +123,27 @@ def evaluate_plant(request):
                 "api-key": settings.PLANTNET_API_KEY,
                 "lang": "hu",
                 "include-related-images": "false",
-                "nb-results": 3
+                "nb-results": 1
             }
 
             response = requests.post(url, files=files, params=params)
             response_data = response.json()
 
             if "results" in response_data and response_data["results"]:
-                best_match = response_data["results"][0]
-                predicted_species = best_match["species"]["scientificName"]
-                confidence = best_match["score"]
+                result = response_data["results"][0]
+                predicted_plant = result["species"].get("commonNames")[0]
+                confidence = result["score"]
                 confidence_percent = round(confidence * 100, 2)
-                
-                image.image_status = 'Processed'
+
+                image.image_status = 'Feldolgozva'
                 image.save()
 
-                recognition_result = RecognitionResult(
+                recognition_result = Result(
                     user=image.user,
                     image=image,
-                    detected_plant=predicted_species,
+                    detected_plant=predicted_plant,
                     plant_confidence_level=confidence_percent
                 )
-
                 recognition_result.save()
 
         return redirect('plant_recognition')
@@ -154,7 +165,7 @@ def delete_images(request):
                     if default_storage.exists(file_path):
                         default_storage.delete(file_path)
 
-                RecognitionResult.objects.filter(image=image).delete()
+                Result.objects.filter(image=image).delete()
 
                 image.delete()
 
