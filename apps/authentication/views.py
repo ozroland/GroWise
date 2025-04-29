@@ -160,27 +160,3 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
     def get(self, request, *args, **kwargs):
         messages.success(request, "Elküldtük az email címedre a jelszó-visszaállítási linket!")
         return redirect('login')
-    
-
-def contact(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        message = request.POST.get("message")
-
-        full_message = f"Név: {name}\nEmail: {email}\nÜzenet:\n{message}"
-
-        try:
-            send_mail(
-                subject="Kapcsolatfelvétel a weboldalról",
-                message=full_message,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[settings.EMAIL_HOST_USER],
-            )
-            messages.success(request, "Az üzenetet sikeresen elküldtük!")
-        except:
-            messages.error(request, "Hiba történt az üzenet küldésekor.")
-
-        return redirect("home") 
-
-    return render(request, "core/home.html")

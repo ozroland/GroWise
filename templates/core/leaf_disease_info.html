@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Levélbetegség felismerő{% endblock %}
+
+{% load static %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h1 class="mb-4">Levélbetegség felismerő</h1>
+    <div class="row">
+      <div class="col-md-6">
+        <img src="{% static 'images/func1.png' %}" alt="Levélbetegség felismerő" class="img-fluid mb-4 rounded shadow">
+      </div>
+      <div class="col-md-6">
+        <p>A Levélbetegség felismerő funkció mesterséges intelligencián alapuló képfeldolgozó rendszert használ, amely képes a feltöltött levélképeken azonosítani különböző betegségek vizuális jeleit.</p>
+        <ul>
+          <li><strong>Betegségek felismerése:</strong> pl. baktériumos foltosság, lisztharmat, sárgulásos vírusok stb.</li>
+          <li><strong>Gépi tanulás:</strong> A rendszer mélytanulási modellt (pl. DenseNet) használ több ezer betanító kép alapján.</li>
+          <li><strong>Valós idejű visszajelzés:</strong> A diagnózis után azonnal megjelenik az eredmény.</li>
+          <li><strong>Ajánlások:</strong> A rendszer kezelési javaslatokat is kínál, ha szükséges.</li>
+        </ul>
+        <p>Ez a funkció különösen hasznos otthoni kertészek, gazdák és agronómusok számára is.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary mb1 bg-olive">Vissza a kezdőlapra</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

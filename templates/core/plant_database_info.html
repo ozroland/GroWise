@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% block title %}Levélbetegség és növény adatbázis{% endblock %}
+{% load static %}
+
+{% block content %}
+<section class="hydroponic-section py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Levélbetegség és növény adatbázis</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <img src="{% static 'images/func3.jpg' %}" alt="Adatbázis" class="img-fluid mb-4 rounded">
+      </div>
+      <div class="col-md-6">
+        <p>Az <strong>adatbázis</strong> funkció lehetőséget biztosít a felhasználóknak arra, hogy átfogó információkat szerezzenek a különböző növényfajokról és azok gyakori betegségeiről.</p>
+        <p>A rendszer részletes leírásokat tartalmaz a tünetekről, fertőzési körülményekről, valamint a javasolt megelőzési és kezelési módszerekről.</p>
+        <p>A felhasználók könnyedén böngészhetnek az adatbázisban, kereshetnek név szerint, vagy felfedezhetik a leggyakoribb problémákat és azok megoldásait.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary mb1 bg-olive">Vissza a kezdőlapra</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% block title %}Növényfelismerő{% endblock %}
+{% load static %}
+
+{% block content %}
+<section class="hydroponic-section py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Növényfelismerő</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <img src="{% static 'images/func2.png' %}" alt="Növényfelismerő" class="img-fluid mb-4 rounded ">
+      </div>
+      <div class="col-md-6">
+        <p>A <strong>Növényfelismerő</strong> funkció lehetővé teszi, hogy képek alapján automatikusan azonosítsuk a különböző növényfajokat.</p>
+        <p>A rendszer mesterséges intelligenciát használ a kép alapján történő osztályozáshoz, így a felhasználók gyorsan és egyszerűen megtudhatják, milyen növény szerepel a feltöltött képen.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary mb1 bg-olive">Vissza a kezdőlapra</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('apps.authentication.urls')),
     path('recognition/', include('apps.recognition.urls')),
     path('plant/', include('apps.plant.urls')),
+    path('home/', include('apps.core.urls')),
 ]
 
 if settings.DEBUG:

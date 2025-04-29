@@ -20,6 +20,4 @@ urlpatterns = [
                                     template_name='authentication/password_reset_confirm.html',success_url=reverse_lazy('password_reset_complete')), name='password_reset_confirm'),
     path('reset/done/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('change_password/', views.change_password, name='change_password'),
-    path('contact/', views.contact, name='contact')  
-
 ]
