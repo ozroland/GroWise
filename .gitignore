@@ -13,8 +13,6 @@ media/
 logs/
 *.log
 *.swp
-*.keras
-*.pth
 htmlcov/
 .coverage
 coverage.xml

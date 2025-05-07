@@ -42,7 +42,7 @@ disease_labels_hu = {
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_path = os.path.join(settings.BASE_DIR, 'plant-disease-model.pth')
+model_path = os.path.join(settings.BASE_DIR, 'models', 'plant-disease-model.pth')
 
 model = ResNet9(3, len(disease_labels_hu ))
 model.load_state_dict(torch.load(model_path, map_location=device))
