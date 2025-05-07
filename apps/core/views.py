@@ -12,14 +12,20 @@ def contact(request):
         full_message = f"Név: {name}\nEmail: {email}\nÜzenet:\n{message}"
 
         try:
-            send_mail(
+            email_sent = send_mail(
                 subject="Kapcsolatfelvétel a weboldalról",
                 message=full_message,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[settings.EMAIL_HOST_USER],
+                fail_silently=False
             )
-            messages.success(request, "Az üzenetet sikeresen elküldtük!")
-        except:
+            
+            if email_sent == 1:
+                messages.success(request, "Az üzenetet sikeresen elküldtük!")
+            else:
+                messages.error(request, "Hiba történt az üzenet küldésekor.")
+                
+        except Exception as e:
             messages.error(request, "Hiba történt az üzenet küldésekor.")
 
         return redirect("home") 

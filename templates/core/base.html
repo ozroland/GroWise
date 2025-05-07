@@ -30,12 +30,12 @@
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'disease_recognition' %}">
+                <a class="nav-link" href="{% url 'recognition' 'disease' %}">
                   <i class="bi bi-virus2"></i> Betegségek felismerése
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'plant_recognition' %}">
+                <a class="nav-link" href="{% url 'recognition' 'plant' %}">
                   <i class="bi bi-tree"></i> Növények felismerése
                 </a>
               </li>

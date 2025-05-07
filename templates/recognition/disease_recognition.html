@@ -16,13 +16,14 @@
     </div>
 
     <div class="image-actions mt-3 text-center">
-        <button type="submit" form="imageForm" formaction="{% url 'evaluate_images' %}" class="btn btn-primary">Kiértékel</button>
+        <button type="submit" form="imageForm" formaction="{% url 'evaluate_disease' %}" class="btn btn-primary">Kiértékel</button>
         <button type="submit" form="imageForm" formaction="{% url 'delete_images' %}" class="btn btn-danger">Töröl</button>
     </div>
 
     <h2 class="mt-4">Eddigi feltöltött betegség képek</h2>
     <form id="imageForm" method="POST">
         {% csrf_token %}
+        <input type="hidden" name="image_type" value="disease">
         <div class="row g-4">
             {% for img in user_images %}
             <div class="col-md-2">

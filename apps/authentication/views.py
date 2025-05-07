@@ -23,7 +23,7 @@ from django.core.exceptions import ValidationError
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect('disease_recognition')
+        return redirect('recognition', image_type='disease')
     else:
         return render(request, "core/home.html")
 
@@ -86,11 +86,14 @@ def activate(request,uidb64,token):
         myuser.save()
         messages.success(request, "Sikeres aktiválás, mostantól beléphetsz!!")
         return redirect('login')
+    else:
+        messages.error(request, "Érvénytelen aktiválási link!")
+        return redirect('login')
 
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('disease_recognition')
+        return redirect('recognition', image_type='disease')
     
     if request.method == 'POST':
         email = request.POST['email']
@@ -100,7 +103,7 @@ def login(request):
         
         if user is not None:
             django_login(request, user)
-            return redirect("disease_recognition")
+            return redirect('recognition', image_type='disease')
         else:
             messages.error(request, "Nem megfelelő adatok!!")
             return redirect('login')
@@ -118,8 +121,8 @@ def signout(request):
 @login_required
 def profile(request):
     user = request.user
-    total_disease_recognitions = Image.objects.filter(user=user, image_type='Disease', image_status='Feldolgozva').count()
-    total_plant_recognitions = Image.objects.filter(user=user, image_type='Plant', image_status='Feldolgozva').count()
+    total_disease_recognitions = Image.objects.filter(user=user, image_type='disease', image_status='Feldolgozva').count()
+    total_plant_recognitions = Image.objects.filter(user=user, image_type='plant', image_status='Feldolgozva').count()
     recent_results = Result.objects.filter(user=user).order_by('-created_at')[:10]
 
     context = {

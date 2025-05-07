@@ -1,0 +1,19 @@
+[run]
+branch = True
+source =
+    apps
+
+[report]
+omit =
+    */migrations/*
+    */tests/*
+    */admin.py
+    */apps.py
+    */wsgi.py
+    */asgi.py
+    manage.py
+    */__init__.py
+    */model_architecture.py
+    */model_loader.py
+show_missing = True
+skip_covered = True

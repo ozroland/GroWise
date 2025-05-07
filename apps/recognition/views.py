@@ -2,18 +2,16 @@ import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Image, Result
-import os
-import numpy as np
-import tensorflow as tf
 from django.conf import settings
 from django.shortcuts import redirect
 from PIL import Image as PILImage
 from django.core.files.storage import default_storage
-
+import torch
+from apps.core.model_loader import model, device, transform, disease_labels_hu, to_device
 
 @login_required
-def disease_recognition(request):
-    user_images = Image.objects.filter(user=request.user, image_type='Disease').order_by('-created_at')
+def recognition(request, image_type='disease'):
+    user_images = Image.objects.filter(user=request.user, image_type=image_type).order_by('-created_at')
 
     if request.method == 'POST' and request.FILES.getlist('images'):
         images = request.FILES.getlist('images')
@@ -22,72 +20,41 @@ def disease_recognition(request):
             new_image = Image(
                 user=request.user,
                 image=image,
-                image_type="Disease"
+                image_type=image_type
             )
             new_image.save()
 
-        return redirect('disease_recognition')
+        return redirect('recognition', image_type=image_type)
 
-    return render(request, "recognition/disease_recognition.html", {"user_images": user_images})
-
-
-@login_required
-def plant_recognition(request):
-    user_images = Image.objects.filter(user=request.user, image_type='Plant').order_by('-created_at')
-
-    if request.method == 'POST' and request.FILES.getlist('images'):
-        images = request.FILES.getlist('images')
-
-        for image in images:
-            new_image = Image(
-                user=request.user,
-                image=image,
-                image_type="Plant"
-            )
-            new_image.save()
-
-        return redirect('plant_recognition')
-
-    return render(request, "recognition/plant_recognition.html", {"user_images": user_images})
+    template_name = f"recognition/{image_type.lower()}_recognition.html"
+    return render(request, template_name, {"user_images": user_images})
 
 
 @login_required
 def evaluate_disease(request):
-    model_path = os.path.join(settings.BASE_DIR, 'tomato_leaf_disease_model.keras')
-
-    model = tf.keras.models.load_model(model_path)
-    #class_names = ['Bacterial spot','Early blight','Late blight','Leaf Mold','Septoria leaf spot','Spider mites','Target Spot','Yellow Leaf Curl Virus','Mosaic virus','Healthy']
-    class_names = [
-    'Bakteriális folt',  # Bacterial spot
-    'Korai betegség',    # Early blight
-    'Késői betegség',    # Late blight
-    'Levélpenész',       # Leaf Mold
-    'Septoria levélfolt',  # Septoria leaf spot
-    'Pókatkák',          # Spider mites
-    'Célzott folt',      # Target Spot
-    'Sárga levél görbület vírus',  # Yellow Leaf Curl Virus
-    'Mózaik vírus',      # Mosaic virus
-    'Egészséges'         # Healthy
-    ]
-
     if request.method == "POST":
         selected_image_ids = request.POST.getlist('selected_images')
         if not selected_image_ids:
-            return redirect('disease_recognition')
+            return redirect('recognition', image_type='disease')
 
-        images = Image.objects.filter(id__in=selected_image_ids, image_type='Disease')
-        
+        images = Image.objects.filter(id__in=selected_image_ids, image_type='disease')
+
         for image in images:
             img_path = image.image.path
-            img = PILImage.open(img_path)
-            img = img.resize((256, 256))  
-            img_array = np.array(img) / 255.0
-            img_array = np.expand_dims(img_array, axis=0)
-            
-            prediction = model.predict(img_array)
-            predicted_class = np.argmax(prediction, axis=1)[0]
-            predicted_class_name = class_names[predicted_class]
-            confidence = round(float(prediction[0][predicted_class] * 100), 2)
+            img = PILImage.open(img_path).convert('RGB')
+            img_tensor = transform(img)
+            xb = to_device(img_tensor.unsqueeze(0), device)
+
+            with torch.no_grad():
+                outputs = model(xb)
+                _, predicted = torch.max(outputs, dim=1)
+                predicted_class = predicted[0].item()
+                confidence_score = torch.softmax(outputs, dim=1)[0][predicted_class].item()
+
+            label_keys = list(disease_labels_hu.keys())
+            predicted_class_name = disease_labels_hu[label_keys[predicted_class]]
+
+            confidence_percent = round(confidence_score * 100, 2)
 
             image.image_status = 'Feldolgozva'
             image.save()
@@ -96,13 +63,11 @@ def evaluate_disease(request):
                 user=image.user,
                 image=image,
                 detected_disease=predicted_class_name,
-                disease_confidence_level=confidence
+                disease_confidence_level=confidence_percent
             )
             recognition_result.save()
 
-        return redirect('disease_recognition')
-    
-    return redirect('disease_recognition')
+    return redirect('recognition', image_type='disease')
 
 
 @login_required
@@ -110,9 +75,9 @@ def evaluate_plant(request):
     if request.method == "POST":
         selected_image_ids = request.POST.getlist('selected_images')
         if not selected_image_ids:
-            return redirect('plant_recognition')
+            return redirect('recognition', image_type='plant')
 
-        images = Image.objects.filter(id__in=selected_image_ids, image_type='Plant')
+        images = Image.objects.filter(id__in=selected_image_ids, image_type='plant')
 
         for image in images:
             img_path = image.image.path
@@ -146,15 +111,16 @@ def evaluate_plant(request):
                 )
                 recognition_result.save()
 
-        return redirect('plant_recognition')
+        return redirect('recognition', image_type='plant')
 
-    return redirect('plant_recognition')
+    return redirect('recognition', image_type='plant')
 
 
 @login_required
-def delete_images(request):
+def delete_images(request, image_type='disease'):
     if request.method == "POST":
         selected_image_ids = request.POST.getlist('selected_images')
+        image_type = request.POST.get('image_type')
 
         if selected_image_ids:
             images = Image.objects.filter(id__in=selected_image_ids)
@@ -169,10 +135,4 @@ def delete_images(request):
 
                 image.delete()
 
-    referer = request.META.get('HTTP_REFERER', '')
-    if 'disease' in referer:
-        return redirect('disease_recognition')
-    elif 'plant' in referer:
-        return redirect('plant_recognition')
-
-    return redirect('disease_recognition')
+    return redirect('recognition', image_type=image_type)

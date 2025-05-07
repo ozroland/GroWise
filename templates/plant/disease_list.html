@@ -14,7 +14,7 @@
                 <a href="{% url 'disease_detail' img.id %}" class="stretched-link"></a>
                 <img src="{% static img.image %}" class="card-img-top" alt="Betegség kép">
                 <div class="card-body">
-                    <p class="card-text text-muted"> {{ img.common_name }}</p>
+                    <p class="card-text text-muted"> {{ img.common_name_hu }}</p>
                     <p class="card-text badge"> {{ img.type }}</p>
                 </div>
             </div>

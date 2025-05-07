@@ -23,6 +23,7 @@
     <h2 class="mt-4">Eddigi feltöltött növény képek</h2>
     <form id="imageForm" method="POST">
         {% csrf_token %}
+        <input type="hidden" name="image_type" value="plant">
         <div class="row g-4">
             {% for img in user_images %}
             <div class="col-md-2">

@@ -1,9 +1,9 @@
 from django.db import models
 
-
 class Disease(models.Model):
-    botanical_name = models.CharField(max_length=255, unique=True)
     common_name = models.CharField(max_length=255, unique=True)
+    common_name_hu = models.CharField(max_length=255)
+    pathogen = models.CharField(max_length=255)
     type = models.TextField()
     identification = models.TextField() 
     solutions = models.TextField()
