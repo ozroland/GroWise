@@ -89,6 +89,17 @@ class EvaluateDiseaseViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('recognition', kwargs={'image_type': 'disease'}))
 
+    def test_evaluate_disease_skips_already_processed_images(self):
+        self.image_instance.image_status = 'Feldolgozva'
+        self.image_instance.save()
+
+        response = self.client.post(reverse('evaluate_disease'), {
+            'selected_images': [self.image_instance.id]
+        })
+
+        self.assertEqual(Result.objects.filter(image=self.image_instance).count(), 0)
+        self.assertEqual(response.status_code, 302)
+
 
 class DeleteImagesViewTests(TestCase):
     def setUp(self):
