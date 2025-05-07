@@ -35,7 +35,7 @@
                     <img src="{{ img.image.url }}" class="card-img-top" alt="Feltöltött kép">
                     <div class="card-body">
                         <p class="card-text text-muted">Dátum: {{ img.created_at|date:"Y-m-d" }}</p>
-                        <p class="card-text badge 
+                        <p class="card-text badge disease-name
                             {% if img.image_status == 'Feldolgozva' %}
                                 bg-success
                             {% else %}
@@ -48,7 +48,7 @@
                             <span class="badge bg-danger disease-name">
                                 {{ img.result.detected_disease }}
                             </span>
-                            <span class="badge bg-warning text-dark">
+                            <span class="badge bg-warning text-dark disease-name">
                                 Pontosság: {{ img.result.disease_confidence_level }}%
                             </span>
                         </div>

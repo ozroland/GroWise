@@ -40,6 +40,10 @@ def evaluate_disease(request):
         images = Image.objects.filter(id__in=selected_image_ids, image_type='disease')
 
         for image in images:
+
+            if image.image_status == 'Feldolgozva':
+                continue
+            
             img_path = image.image.path
             img = PILImage.open(img_path).convert('RGB')
             img_tensor = transform(img)

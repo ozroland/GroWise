@@ -1,27 +1,37 @@
+/* Alap színek és dizájn */
 .upload-section {
-    background-color: #f8f9fa;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 .card {
-    border-radius: 10px;
-    transition: transform 0.2s ease-in-out;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
+
 .card:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
+
 .card img {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
     object-fit: cover;
-    height: 150px;
+    height: 180px;
 }
+
 .image-card {
     position: relative;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.3s ease-in-out;
 }
 
 .image-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-3px);
 }
 
 .selection-overlay {
@@ -34,44 +44,106 @@
     display: none;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.3s ease-in-out;
 }
 
 .selection-icon {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: white;
 }
 
 .image-card.selected .selection-overlay {
     display: flex;
+    background: rgba(0, 123, 255, 0.7);
 }
 
+/* Disease name badge */
 .disease-name {
-    display: inline-block;
-    max-width: 100%; 
-    word-wrap: break-word; 
-    overflow: hidden; 
-    text-overflow: ellipsis;
+    display: block;
+    max-width: 100%;
+    word-wrap: break-word;
+    white-space: normal!important;
+    overflow: visible;
+    text-overflow: unset;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    background-color: #e3342f;
+    color: white;
+    border-radius: 0.25rem;
+    line-height: 1.2;
 }
 
 .timeline {
     list-style: none;
     padding-left: 0;
-  }
+}
 
 .timeline li {
-    margin-bottom: 1rem;
-    border-left: 3px solid #ccc;
-    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #00B5D8;
+    padding-left: 1.5rem;
     position: relative;
 }
 
 .timeline li::before {
     content: "";
-    width: 12px;
-    height: 12px;
-    background: #6c757d;
+    width: 14px;
+    height: 14px;
+    background: #00B5D8;
     border-radius: 50%;
     position: absolute;
-    left: -7px;
-    top: 5px;
+    left: -8px;
+    top: 8px;
+}
+
+.timeline li .timeline-content {
+    font-size: 1rem;
+    color: #495057;
+    line-height: 1.6;
+}
+
+.timeline li .timeline-date {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Button Style */
+.btn {
+    border-radius: 30px;
+    padding: 0.5rem 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #3490dc;
+    color: white;
+}
+
+.btn-success {
+    background-color: #38c172;
+}
+
+.btn-success:hover {
+    background-color: #2d9c54;
+}
+
+.btn-danger {
+    background-color: #e3342f;
+}
+
+.btn-danger:hover {
+    background-color: #c2362a;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
 }
