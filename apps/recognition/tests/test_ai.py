@@ -21,7 +21,6 @@ class DiseaseModelTestCase(TestCase):
         }
 
     def extract_key_from_filename(self, filename):
-        """Kivonja a kulcsot a fájlnévből, pl. TomatoEarlyBlight1.JPG → TomatoEarlyBlight"""
         return re.sub(r'\d+', '', filename.split('.')[0])
 
     def test_model_predictions_against_expected_labels(self):
@@ -33,7 +32,6 @@ class DiseaseModelTestCase(TestCase):
                 key = self.extract_key_from_filename(filename)
 
                 if key not in self.label_mapping:
-                    print(f"❓ Kihagyva: {filename} (ismeretlen kulcs: '{key}')")
                     continue
 
                 expected_label_key = self.label_mapping[key]
@@ -52,10 +50,15 @@ class DiseaseModelTestCase(TestCase):
                 predicted_label_key = label_keys[predicted_class]
                 predicted_label = disease_labels_hu[predicted_label_key]
 
-                print(f"✅ {filename} → {predicted_label} (várt: {expected_label})")
+                self.assertTrue(
+                    expected_label and predicted_label, 
+                    f"{filename}: Elvárt és kapott címke is hiányzik."
+                )
 
-                if expected_label.lower() not in predicted_label.lower():
-                    failures.append(f"{filename}: elvárt '{expected_label}', de kapott '{predicted_label}'")
+                self.assertTrue(
+                    expected_label.lower() in predicted_label.lower(),
+                    f"{filename}: elvárt '{expected_label}', de kapott '{predicted_label}'"
+                )
 
         if failures:
             self.fail("Néhány kép felismerése nem megfelelő:\n" + "\n".join(failures))
