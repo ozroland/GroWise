@@ -19,6 +19,9 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def home(request):
@@ -37,10 +40,12 @@ def signup(request):
         pass2 = request.POST['pass2']
                
         if User.objects.filter(email=email).exists():
+            logger.warning(f"Regisztrációs próbálkozás e-mail cím foglalás miatt: {email}")
             messages.error(request, "Foglalt e-mail cím!!")
             return redirect('signup')
         
         if pass1 != pass2:
+            logger.warning(f"Jelszó nem egyezés: {email}")
             messages.error(request, "A jelszavak nem egyeztek meg!!")
             return redirect('signup')
         
@@ -48,26 +53,31 @@ def signup(request):
             validate_password(pass1)
         except ValidationError as e:
             for error in e:
+                logger.warning(f"Jelszó hiba ({email}): {error}")
                 messages.error(request, error)
             return redirect('signup')
-        
-        myuser = User.objects.create_user(email, email, pass1)
-        myuser.first_name = fname
-        myuser.last_name = lname
-        myuser.is_active = False
-        myuser.save()
+        try:
+            myuser = User.objects.create_user(email, email, pass1)
+            myuser.first_name = fname
+            myuser.last_name = lname
+            myuser.is_active = False
+            myuser.save()
 
-        token = generate_token.make_token(myuser)
-        uidb64 = urlsafe_base64_encode(force_bytes(myuser.pk))
-        activation_link = reverse('activate', kwargs={'uidb64': uidb64, 'token': token})
-        full_link = request.build_absolute_uri(activation_link)
-        
-        subject = "Fiók aktiválása"
-        message = f"Hello {myuser.first_name} {myuser.last_name},\n\n" \
-          "Köszönjük, hogy regisztráltál oldalunkon. Kérjük, kattints az alábbi linkre a fiókod aktiválásához:\n\n" \
-          f"{full_link}\n\n"
-        send_mail(subject, message, settings.EMAIL_HOST_USER, [email])
-        messages.success(request, "Sikeres létrehozás!! Ellenőrizze az e-mail fiókját a regisztráció aktiválásához.")
+            token = generate_token.make_token(myuser)
+            uidb64 = urlsafe_base64_encode(force_bytes(myuser.pk))
+            activation_link = reverse('activate', kwargs={'uidb64': uidb64, 'token': token})
+            full_link = request.build_absolute_uri(activation_link)
+            
+            subject = "Fiók aktiválása"
+            message = f"Hello {myuser.first_name} {myuser.last_name},\n\n" \
+            "Köszönjük, hogy regisztráltál oldalunkon. Kérjük, kattints az alábbi linkre a fiókod aktiválásához:\n\n" \
+            f"{full_link}\n\n"
+            send_mail(subject, message, settings.EMAIL_HOST_USER, [email])
+            messages.success(request, "Sikeres létrehozás!! Ellenőrizze az e-mail fiókját a regisztráció aktiválásához.")
+            logger.info(f"Új felhasználó regisztrálva: {email}")
+        except Exception as e:
+            logger.error(f"Regisztrációs hiba ({email}): {e}")
+            messages.error(request, "Valami hiba történt a regisztráció során.")
         
         return redirect('login')
         
@@ -103,8 +113,10 @@ def login(request):
         
         if user is not None:
             django_login(request, user)
+            logger.info(f"Felhasználó sikeresen bejelentkezett: {email}")
             return redirect('recognition', image_type='disease')
         else:
+            logger.warning(f"Sikertelen bejelentkezés próbálkozás: {email}")
             messages.error(request, "Nem megfelelő adatok!!")
             return redirect('login')
     
@@ -125,6 +137,8 @@ def profile(request):
     total_plant_recognitions = Image.objects.filter(user=user, image_type='plant', image_status='Feldolgozva').count()
     recent_results = Result.objects.filter(user=user).order_by('-created_at')[:10]
 
+    logger.info(f"Felhasználói profil betöltve: {user.email}, Daganat felismerések: {total_disease_recognitions}, Növény felismerések: {total_plant_recognitions}")
+    
     context = {
         "user": user,
         "total_disease_recognitions": total_disease_recognitions,

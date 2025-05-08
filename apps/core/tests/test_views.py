@@ -49,16 +49,26 @@ class ContactViewTests(TestCase):
         self.assertEqual(str(messages_list[0]), "Hiba történt az üzenet küldésekor.")
 
     @patch("apps.core.views.send_mail", side_effect=Exception("SMTP error"))
-    def test_contact_form_raises_exception_during_send(self, mock_send_mail):
+    @patch("apps.core.views.logger.error")
+    def test_contact_form_raises_exception_during_send(self, mock_logger, mock_send_mail):
         response = self.client.post(self.contact_url, self.valid_form_data)
-
+        
         self.assertRedirects(response, reverse('home'))
-
+        
+        mock_logger.assert_called_once()
+        
+        log_message = mock_logger.call_args[0][0]
+        self.assertIn("SMTP error", log_message)
+        
+        expected_log_format = "Kapcsolatfelvételi üzenet hiba:"
+        self.assertIn(expected_log_format, log_message)
+        
         self.assertEqual(len(mail.outbox), 0)
-
+        
         messages_list = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(str(messages_list[0]), "Hiba történt az üzenet küldésekor.")
+        self.assertEqual(messages_list[0].level_tag, 'error')
 
 
 class InfoPagesViewTests(TestCase):

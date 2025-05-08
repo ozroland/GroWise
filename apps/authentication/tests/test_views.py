@@ -8,6 +8,7 @@ from apps.authentication.tokens import generate_token
 import os
 from django.contrib.messages import get_messages
 import tempfile
+from unittest.mock import patch
 
 User = get_user_model()
 
@@ -82,6 +83,32 @@ class SignupViewTests(TestCase):
         response = self.client.post(self.signup_url, data)
         self.assertEqual(response.status_code, 302)
         self.assertFalse(User.objects.filter(email='test@example.com').exists())
+
+    @patch('apps.authentication.views.User.objects.create_user')
+    @patch('apps.authentication.views.logger.error')
+    def test_signup_with_exception_handling(self, mock_logger, mock_create_user):
+        mock_create_user.side_effect = Exception("DB hiba")
+        
+        response = self.client.post(self.signup_url, self.test_user_data)
+        
+        self.assertEqual(response.status_code, 302)
+        
+        mock_logger.assert_called_once()
+        log_message = mock_logger.call_args[0][0]
+        self.assertIn("Regisztrációs hiba", log_message)
+        self.assertIn(self.test_user_data['email'], log_message)
+        self.assertIn("DB hiba", log_message)
+        
+        messages = list(get_messages(response.wsgi_request))
+        error_message = next(
+            (m for m in messages if "Valami hiba történt a regisztráció során" in str(m)),
+            None
+        )
+        
+        self.assertIsNotNone(error_message, "A hibaüzenet nem jelent meg a messages rendszerben")
+        self.assertEqual(error_message.level_tag, 'error')
+        
+        self.assertEqual(User.objects.count(), 0)
 
 
 class ActivateViewTests(TestCase):

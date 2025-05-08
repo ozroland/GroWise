@@ -2,6 +2,10 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def contact(request):
     if request.method == "POST":
@@ -21,11 +25,14 @@ def contact(request):
             )
             
             if email_sent == 1:
+                logger.info(f"Kapcsolatfelvételi üzenet sikeresen elküldve: {email}")
                 messages.success(request, "Az üzenetet sikeresen elküldtük!")
             else:
+                logger.warning(f"Hiba történt az üzenet küldésekor (nem küldve): {email}")
                 messages.error(request, "Hiba történt az üzenet küldésekor.")
                 
         except Exception as e:
+            logger.error(f"Kapcsolatfelvételi üzenet hiba: {e}")
             messages.error(request, "Hiba történt az üzenet küldésekor.")
 
         return redirect("home") 
