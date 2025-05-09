@@ -10,6 +10,12 @@ class Disease(models.Model):
     host = models.CharField(max_length=255)
     image = models.CharField(max_length=255, null=True, blank=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['common_name']),
+            models.Index(fields=['pathogen']),
+        ]
+
 
 class Plant(models.Model):
     botanical_name = models.CharField(max_length=255, unique=True)
@@ -20,3 +26,8 @@ class Plant(models.Model):
     uses = models.TextField()
     distribution = models.TextField()
     image =  models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['common_name']),
+        ]
