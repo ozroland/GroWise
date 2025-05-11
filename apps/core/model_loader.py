@@ -36,8 +36,8 @@ disease_labels_hu = {
     'Tomato_Septoria_leaf_spot': 'Paradicsom - Szeptóriás levélfoltosság',
     'Tomato_Spider_mites': 'Paradicsom - Takácsatkák',
     'Tomato_Target_Spot': 'Paradicsom - Célfoltosság',
-    'Tomato_Tomato_Yellow_leaf_curl_virus': 'Paradicsom - Sárga levélkunkorodás vírus',
     'Tomato_Tomato_mosaic_virus': 'Paradicsom - Mozaikvírus',
+    'Tomato_Tomato_Yellow_leaf_curl_virus': 'Paradicsom - Sárga levélkunkorodás vírus',
 }
 
 
