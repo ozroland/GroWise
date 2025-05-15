@@ -1,9 +1,9 @@
-Growise – Növény- és Betegségfelismerő Rendszer
+GroWise – Növény- és Betegségfelismerő Rendszer
 Ez a projekt egy Django alapú webalkalmazás, amely mesterséges intelligencia segítségével képes növények és növénybetegségek azonosítására feltöltött képek alapján.
 
 Szükséges alkalmazások és eszközök
 Visual Studio Code	Kódszerkesztés
-DataGrip / pgAdmin	PostgreSQL adatbázis kezelése
+pgAdmin	PostgreSQL adatbázis kezelése
 Postman (opcionális)	API tesztelése
 Python 3.12+	Backend futtatásához
 Git	Verziókezelés
@@ -34,6 +34,9 @@ EMAIL_HOST_PASSWORD=valamiJelszo
 DEFAULT_FROM_EMAIL=valami@gmail.com
 PLANTNET_API_KEY=plantnetkulcs123
 SENTRY_DSN=https://...
+
+Modell tanitasi notebook:
+https://colab.research.google.com/drive/1cCqHHhIiIFEZ5UZC662f-1wn5JyaTpy-
 
 Adatbázis migrálása:
 python manage.py makemigrations
