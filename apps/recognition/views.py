@@ -10,6 +10,7 @@ import torch
 from django.contrib import messages
 from apps.core.model_loader import model, device, transform, disease_labels_hu, to_device
 import logging
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -51,37 +52,38 @@ def evaluate_disease(request):
 
             images = Image.objects.filter(id__in=selected_image_ids, image_type='disease')
 
-            for image in images:
+            with transaction.atomic():
+                for image in images:
 
-                if image.image_status == 'Feldolgozva':
-                    continue
-                
-                img_path = image.image.path
-                img = PILImage.open(img_path).convert('RGB')
-                img_tensor = transform(img)
-                xb = to_device(img_tensor.unsqueeze(0), device)
+                    if image.image_status == 'Feldolgozva':
+                        continue
+                    
+                    img_path = image.image.path
+                    img = PILImage.open(img_path).convert('RGB')
+                    img_tensor = transform(img)
+                    xb = to_device(img_tensor.unsqueeze(0), device)
 
-                with torch.no_grad():
-                    outputs = model(xb)
-                    _, predicted = torch.max(outputs, dim=1)
-                    predicted_class = predicted[0].item()
-                    confidence_score = torch.softmax(outputs, dim=1)[0][predicted_class].item()
+                    with torch.no_grad():
+                        outputs = model(xb)
+                        _, predicted = torch.max(outputs, dim=1)
+                        predicted_class = predicted[0].item()
+                        confidence_score = torch.softmax(outputs, dim=1)[0][predicted_class].item()
 
-                label_keys = list(disease_labels_hu.keys())
-                predicted_class_name = disease_labels_hu[label_keys[predicted_class]]
+                    label_keys = list(disease_labels_hu.keys())
+                    predicted_class_name = disease_labels_hu[label_keys[predicted_class]]
 
-                confidence_percent = round(confidence_score * 100, 2)
+                    confidence_percent = round(confidence_score * 100, 2)
 
-                image.image_status = 'Feldolgozva'
-                image.save()
+                    image.image_status = 'Feldolgozva'
+                    image.save()
 
-                recognition_result = Result(
-                    user=image.user,
-                    image=image,
-                    detected_disease=predicted_class_name,
-                    disease_confidence_level=confidence_percent
-                )
-                recognition_result.save()
+                    recognition_result = Result(
+                        user=image.user,
+                        image=image,
+                        detected_disease=predicted_class_name,
+                        disease_confidence_level=confidence_percent
+                    )
+                    recognition_result.save()
 
             logger.info(f"Disease recognition completed for user {request.user.email}.")
         return redirect('recognition', image_type='disease')
@@ -102,37 +104,38 @@ def evaluate_plant(request):
 
             images = Image.objects.filter(id__in=selected_image_ids, image_type='plant')
 
-            for image in images:
-                img_path = image.image.path
+            with transaction.atomic():
+                for image in images:
+                    img_path = image.image.path
 
-                url = f"https://my-api.plantnet.org/v2/identify/all"
-                files = {"images": open(img_path, "rb")}
-                params = {
-                    "api-key": settings.PLANTNET_API_KEY,
-                    "lang": "hu",
-                    "include-related-images": "false",
-                    "nb-results": 1
-                }
+                    url = f"https://my-api.plantnet.org/v2/identify/all"
+                    files = {"images": open(img_path, "rb")}
+                    params = {
+                        "api-key": settings.PLANTNET_API_KEY,
+                        "lang": "hu",
+                        "include-related-images": "false",
+                        "nb-results": 1
+                    }
 
-                response = requests.post(url, files=files, params=params)
-                response_data = response.json()
+                    response = requests.post(url, files=files, params=params)
+                    response_data = response.json()
 
-                if "results" in response_data and response_data["results"]:
-                    result = response_data["results"][0]
-                    predicted_plant = result["species"].get("commonNames")[0]
-                    confidence = result["score"]
-                    confidence_percent = round(confidence * 100, 2)
+                    if "results" in response_data and response_data["results"]:
+                        result = response_data["results"][0]
+                        predicted_plant = result["species"].get("commonNames")[0]
+                        confidence = result["score"]
+                        confidence_percent = round(confidence * 100, 2)
 
-                    image.image_status = 'Feldolgozva'
-                    image.save()
+                        image.image_status = 'Feldolgozva'
+                        image.save()
 
-                    recognition_result = Result(
-                        user=image.user,
-                        image=image,
-                        detected_plant=predicted_plant,
-                        plant_confidence_level=confidence_percent
-                    )
-                    recognition_result.save()
+                        recognition_result = Result(
+                            user=image.user,
+                            image=image,
+                            detected_plant=predicted_plant,
+                            plant_confidence_level=confidence_percent
+                        )
+                        recognition_result.save()
 
             logger.info(f"Plant recognition completed for user {request.user.email}.")
             return redirect('recognition', image_type='plant')
